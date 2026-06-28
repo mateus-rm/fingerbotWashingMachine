@@ -69,6 +69,15 @@ O LED on-board sinaliza o estado do dispositivo:
 - `input_datetime` — horário agendado e último acionamento
 - `input_boolean` — liga e desliga o agendamento
 
+### Automações
+
+- **Disparo no horário agendado.** Quando o horário definido em
+  `maquina_horario_agendado` é atingido e o agendamento está ativo, a automação
+  publica `ON` em `activate`, desliga o `input_boolean` (disparo único) e cria
+  uma notificação de confirmação.
+- **Registro do último acionamento.** Quando o `binary_sensor` de feedback vai
+  para `on`, a automação grava o horário atual em `maquina_ultimo_acionamento`.
+
 ### Exemplo de configuração
 
 ```yaml
@@ -82,6 +91,7 @@ mqtt:
     - name: "Máquina Feedback"
       state_topic: "casa/maquinaLavar/feedback"
       payload_on: "pressed"
+      payload_off: "idle"
       off_delay: 5
 
     # Disponibilidade via watchdog: sem heartbeat por 30s, fica offline
