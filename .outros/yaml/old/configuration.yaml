@@ -1,0 +1,29 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+button:
+  - platform: mqtt
+    name: "Acionar Máquina de Lavar"
+    command_topic: "casa/maquinaLavar/activate"
+    payload_press: "PRESS"
+
+mqtt:
+  binary_sensor:
+    - name: "Máquina Feedback"
+      state_topic: "casa/maquinaLavar/feedback"
+      payload_on: "ON"
+      payload_off: "OFF"
+
+  sensor:
+    - name: "Máquina ESP Status"
+      state_topic: "casa/maquinaLavar/is_up"
+

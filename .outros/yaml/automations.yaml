@@ -1,0 +1,34 @@
+- id: "maquina_agendamento_disparar"
+  alias: "Máquina - Disparar no Horário Agendado"
+  trigger:
+    - platform: time
+      at: input_datetime.maquina_horario_agendado
+  condition:
+    - condition: state
+      entity_id: input_boolean.maquina_agendamento_ativo
+      state: "on"
+  action:
+    - action: mqtt.publish
+      data:
+        topic: "casa/maquinaLavar/activate"
+        payload: "ON"
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.maquina_agendamento_ativo
+    - action: persistent_notification.create
+      data:
+        title: "Máquina de Lavar"
+        message: "Agendamento executado com sucesso"
+
+- id: "maquina_registrar_acionamento"
+  alias: "Máquina - Registrar Último Acionamento"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.maquina_feedback
+      to: "on"
+  action:
+    - action: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.maquina_ultimo_acionamento
+      data:
+        datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"

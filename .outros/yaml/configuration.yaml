@@ -1,0 +1,51 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# --- Agendamento ---
+input_datetime:
+  maquina_horario_agendado:
+    name: "Horário Agendado - Máquina"
+    has_date: false
+    has_time: true
+
+  maquina_ultimo_acionamento:
+    name: "Último Acionamento - Máquina"
+    has_date: true
+    has_time: true
+
+input_boolean:
+  maquina_agendamento_ativo:
+    name: "Agendamento da Máquina Ativo"
+    icon: mdi:washing-machine
+
+# --- MQTT ---
+mqtt:
+  button:
+    - name: "Acionar Máquina de Lavar"
+      command_topic: "casa/maquinaLavar/activate"
+      payload_press: "ON"
+
+  binary_sensor:
+    - name: "Máquina Feedback"
+      state_topic: "casa/maquinaLavar/feedback"
+      payload_on: "pressed"
+      payload_off: "idle"
+      off_delay: 5
+
+    - name: "Máquina ESP Online"
+      state_topic: "casa/maquinaLavar/status"
+      payload_on: "online"
+      payload_off: "offline"
+      device_class: connectivity
+
+  sensor:
+    - name: "Máquina ESP Status Raw"
+      state_topic: "casa/maquinaLavar/is_up"
